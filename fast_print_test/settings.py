@@ -10,7 +10,24 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
+from dataclasses import dataclass
 from pathlib import Path
+
+from utils.helper import parseBool
+from dotenv import load_dotenv
+load_dotenv()
+
+
+@dataclass(frozen=True)
+class Envs:
+    FASTPRINT_API: str = os.getenv("FASTPRINT_API", "")
+    FASTPRINT_USERNAME: str = os.getenv("FASTPRINT_USERNAME", "")
+    FASTPRINT_PASSWORD: str = os.getenv("FASTPRINT_PASSWORD", "")
+
+    DEBUG: bool = parseBool(os.getenv("DEBUG", False))
+    HOST: str = os.getenv("HOST", "0.0.0.0")
+    PORT: str = os.getenv("PORT", "8080")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,7 +40,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-$r6#%q_4b7_1xcgd)^neehf4$iue&2aa3(qtkpoc$v2mv=d%_s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = Envs.DEBUG
+HOST = Envs.HOST
+PORT = Envs.PORT
 
 ALLOWED_HOSTS = []
 
