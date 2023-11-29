@@ -11,35 +11,30 @@ class Command(BaseCommand):
         with open('product_seed.json', 'r') as f:
             raw_data = json.load(f)
 
-        unique_categories = []
-        unique_statuses = []
         for data in raw_data:
-            print("-----------------------------")
-            print(data.get("id_produk"))
-            product_obj = Product.objects.create(
-                id_produk=int(data.get("id_produk")),
-                nama_produk=data.get("nama_produk"),
-                harga=int(data.get("harga")),
-            )
-
             category = data.get("kategori")
-            if category and category not in unique_categories:
-                unique_categories.append(category)
-
-                category_obj = Category.objects.create(
-                    nama_kategori=category,
-                )
-                category_obj.produk.add(product_obj)
-                category_obj.save()
+            category_obj, _ = Category.objects.get_or_create(
+                nama_kategori=category,
+            )
+            category_obj.save()
 
             status = data.get("status")
-            if status and status not in unique_statuses:
-                unique_statuses.append(status)
+            status_obj, _ = Status.objects.get_or_create(
+                nama_status=status,
+            )
+            status_obj.save()
 
-                status_obj = Status.objects.create(
-                    nama_status=status,
-                )
-                status_obj.produk.add(product_obj)
-                status_obj.save()
+            product_obj, _ = Product.objects.get_or_create(
+                id_produk=int(data.get("id_produk")),
+                defaults={
+                    "nama_produk": data.get("nama_produk"),
+                    "harga": int(data.get("harga")),
+                    "kategori": category_obj,
+                    "status": status_obj
+                }
+            )
+
+            print(f"Product {product_obj.nama_produk} created")
+
 
         self.stdout.write(self.style.SUCCESS('Data seeded successfully!'))
