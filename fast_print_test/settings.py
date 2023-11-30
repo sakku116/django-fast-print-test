@@ -24,10 +24,6 @@ load_dotenv()
 
 @dataclass(frozen=True)
 class Envs:
-    FASTPRINT_API: str = os.getenv("FASTPRINT_API", "")
-    FASTPRINT_USERNAME: str = os.getenv("FASTPRINT_USERNAME", "")
-    FASTPRINT_PASSWORD: str = os.getenv("FASTPRINT_PASSWORD", "")
-
     DEBUG: bool = parseBool(os.getenv("DEBUG", False))
     HOST: str = os.getenv("HOST", "0.0.0.0")
     PORT: str = os.getenv("PORT", "8080")
