@@ -1,7 +1,6 @@
 import json
 
 from django.core.paginator import Paginator
-from django.forms.models import model_to_dict
 from rest_framework import permissions
 from rest_framework.views import APIView
 
@@ -142,3 +141,12 @@ class ProductDetailApiView(APIView):
 
         serializer = ProductSerializer(existing_obj)
         return CustomResp(error=False, message="product updated", data=serializer.data, status_code=200)
+
+    def delete(self, request, product_id: str, *args, **kwargs):
+        try:
+            existing_obj = Product.objects.get(id_produk=product_id)
+        except Product.DoesNotExist as e:
+            return CustomResp(error=True, message="product not found", status_code=400)
+
+        existing_obj.delete()
+        return CustomResp(error=False, message="product deleted", status_code=200)
