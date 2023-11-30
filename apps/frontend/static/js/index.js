@@ -1,67 +1,19 @@
-var modal = document.getElementById('myModal');
-var open_mdl_btn = document.getElementById("openModalBtn");
-var close_mdl_btn = document.getElementById("closeModalBtn");
+let product_status = "all"
 
-window.onclick = function (event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
+document.addEventListener("DOMContentLoaded", function () {
+  renderProductList(page = 1, product_status = product_status)
+  var modal = document.getElementById('myModal');
+  window.onclick = function (event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
   }
-}
+})
 
-function openModal(context, product_id = null) {
-  if (context == "add") {
-    modalAdd()
-  } else if (context == "edit") {
-    modalEdit(product_id)
-  }
-  modal.style.display = "block";
-}
-
-function modalAdd() {
-  modal_content = document.getElementById("modal-content");
-  modal_content += `
-    <div>
-      <h3>Tambahkan Produk</h3>
-      <form>
-        <label for="nama_produk">Nama Produk:</label>
-        <input type="text" id="nama_produk" name="nama_produk" required>
-
-        <label for="harga">Harga:</label>
-        <input type="text" id="harga" name="harga" required>
-
-        <label for="kategori">Kategori:</label>
-        <select id="kategori" name="kategori" required>
-          <option value="">Pilih Kategori</option>
-          <option value="electronics">Electronics</option>
-          <option value="fashion">Fashion</option>
-          <option value="food">Food</option>
-        </select>
-
-        <label for="status">Status:</label>
-        <select id="status" name="status" required>
-          <option value="">Pilih Status</option>
-          <option value="dijual">Bisa Dijual</option>
-          <option value="tidak_dijual">Tidak Bisa Dijual</option>
-        </select>
-
-        <button type="submit">Submit</button>
-      </form>
-    </div>
-
-  `
-}
-
-function modalEdit(product_id) {
-
-}
-
-function closeModal() {
-  modal.style.display = "none";
-}
 
 // load product list
-function renderProductList(page = 1) {
-  let url = `/api/products?page=${page}`;
+function renderProductList(page=1, product_status=all) {
+  let url = `/api/products?page=${page}&available=${product_status}`;
 
   fetch(url)
     .then(response => {
@@ -169,7 +121,11 @@ function renderPostsCallback(pages_total = 1, current_page = 1, has_previous = f
 }
 
 function onPagination(t) {
-  renderProductList(page = parseInt(t.getAttribute("data-page")))
+  renderProductList(page = parseInt(t.getAttribute("data-page"), product_status = product_status))
 }
 
-renderProductList(page = 1)
+function onOptionChanged() {
+  var selectedOption = document.getElementById("status").value;
+  product_status = selectedOption
+  renderProductList(page = 1, product_status = product_status)
+}
