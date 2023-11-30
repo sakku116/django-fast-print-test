@@ -51,6 +51,8 @@ class ProductApiView(APIView):
                     "total_data": paginator.count,
                     "current_page": params["page"],
                     "limit": params["limit"],
+                    "has_next": results.has_next(),
+                    "has_prev": results.has_previous(),
                 }
             },
             status_code=200,

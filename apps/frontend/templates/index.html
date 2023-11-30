@@ -10,16 +10,24 @@
 <div>
   <h1>Daftar Produk</h1>
   <div class="action-container">
-    <button id="openModalBtn" onClick="openModal()">Tambah Produk</button>
+    <button id="openModalBtn" onClick="openModal('add')">Tambah Produk</button>
     <select name="status" id="status" style="margin-top: 10px">
       <option value="all">Semua</option>
       <option value="true">Bisa Dijual</option>
       <option value="false">Tidak Bisa Dijual</option>
     </select>
   </div>
+  <ul class="pagination" class="pagination" style="padding: 0">
+    <!-- <li class="page-item page-link inactive" data-page="prev">Previous</li>
+      <li class="page-item page-link active" data-page="1">1</li>
+      <li class="page-item page-link" data-page="2">2</li>
+      <li class="page-item page-link" data-page="3">3</li>
+      <li class="page-item page-link" data-page="next">Next</li> -->
+  </ul>
   <div id="products-container">
-    <div class="card">
-      <img class="product-img" src="https://user-images.githubusercontent.com/2351721/31314483-7611c488-ac0e-11e7-97d1-3cfc1c79610e.png">
+    <!-- <div class="card">
+      <img class="product-img"
+        src="https://user-images.githubusercontent.com/2351721/31314483-7611c488-ac0e-11e7-97d1-3cfc1c79610e.png">
       <div class="detail">
         <h3 style="margin-top: 0;">Product Name</h3>
         <p class="detail-item">Harga: 100000</p>
@@ -34,64 +42,16 @@
           <img src="{% static 'images/delete.png' %}">
         </button>
       </div>
-    </div>
-    <div class="card">
-      <img class="product-img" src="https://user-images.githubusercontent.com/2351721/31314483-7611c488-ac0e-11e7-97d1-3cfc1c79610e.png">
-      <div class="detail">
-        <h3 style="margin-top: 0;">Product Name</h3>
-        <p class="detail-item">Harga: 100000</p>
-        <p class="detail-item">Kategori: Electronics</p>
-        <p class="detail-item">Status: Bisa Dijual</p>
-      </div>
-      <div class="card-action">
-        <button class="card-action-button">
-          <img src="{% static 'images/pencils.png' %}">
-        </button>
-        <button class="card-action-button">
-          <img src="{% static 'images/delete.png' %}">
-        </button>
-      </div>
-    </div>
-    <div class="card">
-      <img class="product-img" src="https://user-images.githubusercontent.com/2351721/31314483-7611c488-ac0e-11e7-97d1-3cfc1c79610e.png">
-      <div class="detail">
-        <h3 style="margin-top: 0;">Product Name</h3>
-        <p class="detail-item">Harga: 100000</p>
-        <p class="detail-item">Kategori: Electronics</p>
-        <p class="detail-item">Status: Bisa Dijual</p>
-      </div>
-      <div class="card-action">
-        <button class="card-action-button">
-          <img src="{% static 'images/pencils.png' %}">
-        </button>
-        <button class="card-action-button">
-          <img src="{% static 'images/delete.png' %}">
-        </button>
-      </div>
-    </div>
-    <div class="card">
-      <img class="product-img" src="https://user-images.githubusercontent.com/2351721/31314483-7611c488-ac0e-11e7-97d1-3cfc1c79610e.png">
-      <div class="detail">
-        <h3 style="margin-top: 0;">Product Name</h3>
-        <p class="detail-item">Harga: 100000</p>
-        <p class="detail-item">Kategori: Electronics</p>
-        <p class="detail-item">Status: Bisa Dijual</p>
-      </div>
-      <div class="card-action">
-        <button class="card-action-button">
-          <img src="{% static 'images/pencils.png' %}">
-        </button>
-        <button class="card-action-button">
-          <img src="{% static 'images/delete.png' %}">
-        </button>
-      </div>
-    </div>
+    </div> -->
   </div>
 </div>
 <div id="myModal" class="modal">
   <div class="modal-content">
     <button class="close" id="closeModalBtn" onclick="closeModal()">&times;</button>
     <p>This is a modal! You can put any content here.</p>
+    <div>
+      <h3>Tambahkan Produk</h3>
+    </div>
   </div>
 </div>
 <script src="{% static 'js/index.js' %}"></script>
