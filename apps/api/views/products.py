@@ -1,15 +1,19 @@
+import json
+
 from django.core.paginator import Paginator
+from django.forms.models import model_to_dict
 from rest_framework import permissions
 from rest_framework.views import APIView
 
-from apps.api.models import Product
-from apps.api.serializers import ProductSerializer
+from apps.api.models import Category, Product, Status
+from apps.api.schemas.req import products as products_req
+from apps.api.serializers import ProductSerializer, CategorySerializer, StatusSerializer
 from utils.helper import parseBool
 from utils.resp import CustomResp
 
 
 class ProductApiView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         try:
@@ -18,7 +22,7 @@ class ProductApiView(APIView):
                 "page": int(request.query_params.get("page", "1")),
                 "limit": int(request.query_params.get("limit", "10")),
             }
-            if params["available"] not in ["None", ""]:
+            if params["available"] not in ["None", "", None, "all"]:
                 params["available"] = parseBool(params["available"])
         except Exception as e:
             print(f"error: {e}")
@@ -31,13 +35,62 @@ class ProductApiView(APIView):
 
         filters = {}
         if type(params["available"]) == bool:
-            filters["kategori__nama_kategori"] = (
-                "bisa djual" if params["available"] else "tidak bisa dijual"
+            filters["status__nama_status"] = (
+                "bisa dijual" if params["available"] else "tidak bisa dijual"
             )
 
-        products = Product.objects.filter(**filters).all()
+        products = Product.objects.select_related("kategori", "status").order_by("-created_at").filter(**filters).all()
         paginator = Paginator(products, params["limit"])
         results = paginator.get_page(params["page"])
         serializer = ProductSerializer(results, many=True)
 
-        return CustomResp(data=serializer.data, status_code=200)
+        return CustomResp(
+            data=serializer.data,
+            additional_field={
+                "pagination_meta": {
+                    "total_page": paginator.num_pages,
+                    "total_data": paginator.count,
+                    "current_page": params["page"],
+                    "limit": params["limit"],
+                }
+            },
+            status_code=200,
+        )
+
+    def post(self, request, *args, **kwargs):
+        try:
+            payload = products_req.PostProductCreationReq(**json.loads(request.body))
+        except Exception as e:
+            print(f"error: {e}")
+            return CustomResp(
+                error=True,
+                message="invalid payload",
+                error_detail=str(e),
+                status_code=400,
+            )
+
+        try:
+            category = Category.objects.get(id_kategori=payload.id_kategori)
+        except Category.DoesNotExist as e:
+            return CustomResp(error=True, message="category not found", status_code=400)
+        except Exception as e:
+            print(f"error: {e}")
+            raise CustomResp(error=True, message="internal server error", error_detail=str(e), status_code=500)
+
+        try:
+            status = Status.objects.get(id_status=payload.id_status)
+        except Status.DoesNotExist as e:
+            return CustomResp(error=True, message="category not found", status_code=400)
+        except Exception as e:
+            print(f"error: {e}")
+            raise CustomResp(error=True, message="internal server error", error_detail=str(e), status_code=500)
+
+        new_product = Product.objects.create(
+            nama_produk=payload.nama_produk,
+            harga=payload.harga,
+            kategori=category,
+            status=status,
+        )
+
+        serializer = ProductSerializer(new_product)
+        return CustomResp(error=False, message="product created", data=serializer.data, status_code=200)
