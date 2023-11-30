@@ -14,8 +14,11 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-from utils.helper import parseBool
+import dj_database_url
 from dotenv import load_dotenv
+
+from utils.helper import parseBool
+
 load_dotenv()
 
 
@@ -28,6 +31,8 @@ class Envs:
     DEBUG: bool = parseBool(os.getenv("DEBUG", False))
     HOST: str = os.getenv("HOST", "0.0.0.0")
     PORT: str = os.getenv("PORT", "8080")
+
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -97,12 +102,20 @@ WSGI_APPLICATION = 'fast_print_test.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if not Envs.DATABASE_URL:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=Envs.DATABASE_URL,
+            conn_max_age=600,
+        )
+    }
 
 
 # Password validation
