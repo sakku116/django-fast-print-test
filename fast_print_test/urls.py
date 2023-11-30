@@ -23,4 +23,5 @@ urlpatterns = [
     path('api/docs', include_docs_urls('API Documentaion')),
     path('api/auth/', include('rest_framework.urls')),
     path('api/', include('apps.api.urls')),
+    path('', include('apps.frontend.urls')),
 ]
