@@ -110,7 +110,11 @@ class ProductDetailApiView(APIView):
                 status_code=400,
             )
 
-        existing_obj = Product.objects.get(id_produk=product_id)
+        try:
+            existing_obj = Product.objects.get(id_produk=product_id)
+        except Product.DoesNotExist as e:
+            return CustomResp(error=True, message="product not found", status_code=400)
+
         if payload.nama_produk:
             existing_obj.nama_produk = payload.nama_produk
         if payload.harga:
