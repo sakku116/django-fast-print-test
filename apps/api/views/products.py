@@ -94,3 +94,47 @@ class ProductApiView(APIView):
 
         serializer = ProductSerializer(new_product)
         return CustomResp(error=False, message="product created", data=serializer.data, status_code=200)
+
+class ProductDetailApiView(APIView):
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, product_id: str, *args, **kwargs):
+        try:
+            payload = products_req.PatchProductUpdationReq(**json.loads(request.body))
+        except Exception as e:
+            print(f"error: {e}")
+            return CustomResp(
+                error=True,
+                message="invalid payload",
+                error_detail=str(e),
+                status_code=400,
+            )
+
+        existing_obj = Product.objects.get(id_produk=product_id)
+        if payload.nama_produk:
+            existing_obj.nama_produk = payload.nama_produk
+        if payload.harga:
+            existing_obj.harga = payload.harga
+        if payload.id_kategori:
+            try:
+                category = Category.objects.get(id_kategori=payload.id_kategori)
+            except Category.DoesNotExist as e:
+                return CustomResp(error=True, message="category not found", status_code=400)
+            except Exception as e:
+                print(f"error: {e}")
+                raise CustomResp(error=True, message="internal server error", error_detail=str(e), status_code=500)
+            existing_obj.kategori = category
+        if payload.id_status:
+            try:
+                status = Status.objects.get(id_status=payload.id_status)
+            except Status.DoesNotExist as e:
+                return CustomResp(error=True, message="status not found", status_code=400)
+            except Exception as e:
+                print(f"error: {e}")
+                raise CustomResp(error=True, message="internal server error", error_detail=str(e), status_code=500)
+            existing_obj.status = status
+
+        existing_obj.save()
+
+        serializer = ProductSerializer(existing_obj)
+        return CustomResp(error=False, message="product updated", data=serializer.data, status_code=200)
