@@ -1,4 +1,4 @@
-let product_status = "all"
+var product_status = "all"
 
 document.addEventListener("DOMContentLoaded", function () {
   renderProductList(page = 1, product_status = product_status)
@@ -12,7 +12,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 // load product list
-function renderProductList(page = 1, product_status = 'all') {
+function renderProductList(page = 1, product_status = "all") {
+  console.log("renderProductList " + product_status)
   let url = `/api/products?page=${page}&available=${product_status}`;
 
   fetch(url)
@@ -121,12 +122,17 @@ function renderPostsCallback(pages_total = 1, current_page = 1, has_previous = f
 }
 
 function onPagination(t) {
-  renderProductList(page = parseInt(t.getAttribute("data-page"), product_status = product_status))
+  renderProductList(
+    page=parseInt(t.getAttribute("data-page")),
+    product_status=document.querySelector("#status").value
+  )
+  console.log("onPagination "+ product_status)
 }
 
 function onOptionChanged() {
   var selectedOption = document.getElementById("status").value;
   product_status = selectedOption
+  console.log(product_status)
   renderProductList(page = 1, product_status = product_status)
 }
 
