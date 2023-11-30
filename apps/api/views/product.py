@@ -98,6 +98,14 @@ class ProductApiView(APIView):
 
 class ProductDetailApiView(APIView):
     # permission_classes = [permissions.IsAuthenticated]
+    def get(self, request, product_id: str, *args, **kwargs):
+        try:
+            product = Product.objects.select_related("kategori", "status").get(id_produk=product_id)
+        except Product.DoesNotExist as e:
+            return CustomResp(error=True, message="product not found", status_code=400)
+
+        serializer = ProductSerializer(product)
+        return CustomResp(data=serializer.data, status_code=200)
 
     def patch(self, request, product_id: str, *args, **kwargs):
         try:

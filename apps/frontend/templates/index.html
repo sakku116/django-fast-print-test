@@ -4,7 +4,9 @@
 {% block head %}
 <title>Product List</title>
 <link rel="stylesheet" href="{% static 'css/index.css' %}">
+<link rel="stylesheet" href="{% static 'css/modal.css' %}">
 <script src="{% static 'js/index.js' %}"></script>
+<script src="{% static 'js/fetch.js' %}"></script>
 <script src="{% static 'js/modal.js' %}"></script>
 {% endblock %}
 
@@ -12,7 +14,7 @@
 <div>
   <h1>Daftar Produk</h1>
   <div class="action-container">
-    <button id="openModalBtn" onClick="openModal('add')">Tambah Produk</button>
+    <button id="openModalBtn" onclick="openModal('add')">Tambah Produk</button>
     <select name="status" id="status" onchange="onOptionChanged()" style="margin-top: 10px">
       <option value="all">Semua</option>
       <option value="true">Bisa Dijual</option>
@@ -50,9 +52,8 @@
 <div id="myModal" class="modal">
   <div class="modal-content">
     <button class="close" id="closeModalBtn" onclick="closeModal()">&times;</button>
-    <p>This is a modal! You can put any content here.</p>
-    <div>
-      <h3>Tambahkan Produk</h3>
+    <div class="modal-inner-content">
+
     </div>
   </div>
 </div>

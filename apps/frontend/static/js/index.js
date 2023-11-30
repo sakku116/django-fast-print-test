@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 // load product list
-function renderProductList(page=1, product_status=all) {
+function renderProductList(page = 1, product_status = 'all') {
   let url = `/api/products?page=${page}&available=${product_status}`;
 
   fetch(url)
@@ -41,16 +41,16 @@ function renderProductList(page=1, product_status=all) {
             <img class="product-img"
               src="https://user-images.githubusercontent.com/2351721/31314483-7611c488-ac0e-11e7-97d1-3cfc1c79610e.png">
             <div class="detail">
-              <h3 style="margin-top: 0;">${item.nama_produk}</h3>
-              <p class="detail-item">Harga: ${item.harga}</p>
-              <p class="detail-item">Kategori: ${item.kategori.nama_kategori}</p>
-              <p class="detail-item">Status: ${item.status.nama_status}</p>
+              <h3 class="nama_produk" style="margin-top: 0;">${item.nama_produk}</h3>
+              <p class="detail-item harga">Harga: ${item.harga}</p>
+              <p class="detail-item kategori">Kategori: ${item.kategori.nama_kategori}</p>
+              <p class="detail-item status">Status: ${item.status.nama_status}</p>
             </div>
             <div class="card-action">
-              <button class="card-action-button">
+              <button class="card-action-button" onclick="openModal('edit', ${item.id_produk})">
                 <img src="/static/images/pencils.png">
               </button>
-              <button class="card-action-button">
+              <button class="card-action-button" onclick="openModal('delete', ${item.id_produk})">
                 <img src="/static/images/delete.png">
               </button>
             </div>
@@ -128,4 +128,9 @@ function onOptionChanged() {
   var selectedOption = document.getElementById("status").value;
   product_status = selectedOption
   renderProductList(page = 1, product_status = product_status)
+}
+
+function changeOption(otp) {
+  product_status = otp
+  document.getElementById("status").value = otp
 }
