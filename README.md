@@ -1,4 +1,4 @@
-# Fast Print Test
+# Django product app practice
 
 ## Setup
 - Buat virtual environment pada root directory dengan command:
